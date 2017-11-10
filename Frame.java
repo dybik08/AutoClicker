@@ -10,6 +10,8 @@ import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -17,9 +19,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 
@@ -34,6 +38,9 @@ public class Frame
 	JPanel panelGlowny;
 	ThreadGroup grupaWatkowSkanowania = new ThreadGroup("Watki skanowania");
 	ThreadGroup grupaWatkowKlikacza = new ThreadGroup("Watki klikacza");
+	JTextField pozycjaX;
+	JTextField pozycjaY;
+	int delay;
 	
 	public Frame()
 	{
@@ -94,12 +101,25 @@ public class Frame
 		przycisk4.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			{
 				grupaWatkowKlikacza.interrupt();
 				tekst.append("\n"+"Zakończono klikanie myszą");
 			}
 			
 		});
+		
+		JLabel podpisCzestotliwościKlikania = new JLabel("W oknie poniżej wpisz częstotliwość kliknięć (milisekundy)");
+		obszarPrzyciskow.add(podpisCzestotliwościKlikania);
+		
+		pozycjaX = new JTextField("");
+		obszarPrzyciskow.add(pozycjaX);
+		
+		JLabel podpisDodawanegoRandomDelay = new JLabel("W oknie poniżej wpisz zakres losowego opóźnienia klikania (milisekundy)");
+		obszarPrzyciskow.add(podpisDodawanegoRandomDelay);
+		
+		pozycjaY = new JTextField("");
+		obszarPrzyciskow.add(pozycjaY);
 		
 		tekst = new JTextArea(15,50);
 		tekst.setLineWrap(true);
@@ -123,6 +143,20 @@ public class Frame
 		ramka.pack();
 		ramka.setVisible(true);
 	}
+	
+//	public void setDelay(int opoznienie)
+//	{
+//		
+//    	delay = Integer.parseInt(pozycjaX.getText());
+//		delay = opoznienie;
+//	
+//	}
+//	
+//	public int getDelay()
+//	{
+//		return delay;
+//		
+//	}
 	
 	public class PozycjaMyszy implements Runnable
 	{
@@ -151,8 +185,8 @@ public class Frame
 	public class Klikacz implements Runnable
 	{
 	
-	public int delay = 50;
-	public int rate = 1000;
+	public int delay = Integer.parseInt(pozycjaX.getText());
+	public int randomDelayBetweenClicks = delay +((int) (Math.random() * Integer.parseInt(pozycjaY.getText())));
 	public int rate2 = ((int) (Math.random() * delay));
 	public int randomWait = (50+ (int) (Math.random()*100));
 	
@@ -166,7 +200,7 @@ public class Frame
 			        {
 			           try
 			           {
-			           Thread.sleep(rate);
+			           Thread.sleep(randomDelayBetweenClicks);
 			           robot.mousePress(InputEvent.BUTTON1_MASK);
 			           Thread.sleep(randomWait);
 					   robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -185,10 +219,3 @@ public class Frame
 		
 	}
 }
-
-	
-	
-	
-
-
-
