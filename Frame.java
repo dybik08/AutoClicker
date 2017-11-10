@@ -27,14 +27,12 @@ public class Frame
 	JFrame ramka;
 	Thread watek;
 	JPanel panelGlowny;
-	ThreadGroup grupaWatkow = new ThreadGroup("Grupa w¹tków");
+	ThreadGroup grupaWatkow = new ThreadGroup("Grupa wÄ…tkÃ³w");
 	
 	
 	public Frame()
 	{
-	
 		funkcja1();
-		
 	}
 	
 	public void funkcja1()
@@ -49,110 +47,59 @@ public class Frame
 		
 		Box obszarPrzyciskow = new Box(BoxLayout.Y_AXIS);
 		
-		
-//		panelGlowny = new JPanel();
-		
 		JButton przycisk = new JButton("Start");
 		obszarPrzyciskow.add(przycisk);
-		
-//		
-//		JScrollPane przewijanie = new JScrollPane(tekst);
-//		przewijanie.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//		przewijanie.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		
 		przycisk.addActionListener(new ActionListener()
 		{
-			
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				
 				watek = new Thread(grupaWatkow, new PozycjaMyszy());
 				watek.start();
-				
 			}
-			
 		});
 		
 		JButton przycisk2 = new JButton("Stop");
 		obszarPrzyciskow.add(przycisk2);
 		przycisk2.addActionListener(new ActionListener()
 		{
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
 				grupaWatkow.interrupt();
-				tekst.append("\n"+"Zakoñczono skanowanie pozycji myszy");
+				tekst.append("\n"+"ZakoÅ„czono skanowanie pozycji myszy");
 			}
-			
 		});
-		
-//		panelGlowny.add(przycisk);
-//		panelGlowny.add(przycisk2);
-//		panelGlowny.add(przewijanie);
-		
-//		ramka.getContentPane().add(BorderLayout.WEST,przycisk);
-//		ramka.getContentPane().add(BorderLayout.EAST, przycisk2);
-//		ramka.getContentPane().add(BorderLayout.CENTER,tekst);
 		
 		tekst = new JTextArea(15,50);
 		tekst.setLineWrap(true);
 		tekst.setWrapStyleWord(true);
 		tekst.setEditable(false);
 		tekst.append("Rozpocznij skanowanie pozycji myszy");
-		//obszarPrzyciskow.add(tekst);
 		
 		JScrollPane przewijanie = new JScrollPane(tekst);
 		przewijanie.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		przewijanie.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		panelTla.add(BorderLayout.EAST, obszarPrzyciskow);
-		
 		ramka.getContentPane().add(panelTla);
 		
-		//ramka.getContentPane().add(BorderLayout.CENTER, przewijanie);
-//		ramka.setSize(400,400);
-//		ramka.setVisible(true);
-		
 		BorderLayout siatkaPolWyboru = new BorderLayout();
-		
-		
-		
 		panelGlowny = new JPanel(siatkaPolWyboru);
-		//panelGlowny.add(tekst);
 		panelGlowny.add(przewijanie);
-		
-		
-		
-//		JScrollPane przewijanie = new JScrollPane(tekst);
-//		przewijanie.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//		przewijanie.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		
-		
 		panelTla.add(BorderLayout.WEST, panelGlowny);
+		
 		ramka.setBounds(50,50,300,300);
 		ramka.pack();
 		ramka.setVisible(true);
-		
-		
-		
 	}
-	
 	
 	public class PozycjaMyszy implements Runnable
 	{
-		
-		
-	
 	@Override
 	public void run() 
 		{
 		try 
  	    {
-		
-			
-			
 			while(!Thread.currentThread().isInterrupted()) //mouseX !=0 || mouseY !=0
 			{			
 			   mouseX = MouseInfo.getPointerInfo().getLocation().getX();
@@ -162,18 +109,13 @@ public class Frame
 			   tekst.setText("Aktualna pozycja myszy"+"\n"+ "X "+mouseXX+" "+"     Y"+mouseYY);
 			 	    //System.out.println("Pozycja myszy X i Y"+"\n"+"Y " + mouseYY +" X "+ mouseXX);
 				Thread.sleep(1000);
-			
-		}  
-		
+			}  
 		}catch (InterruptedException e)
 		{
-			System.out.println("Zakoñczono skanowanie pozycji myszy");
-		
+			System.out.println("ZakoÅ„czono skanowanie pozycji myszy");
 		}
 		}
-		
 	}
-	
 }
 
 	
