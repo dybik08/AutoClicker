@@ -1,11 +1,15 @@
+import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -26,9 +30,10 @@ public class Frame
 	JTextArea tekst;
 	JFrame ramka;
 	Thread watek;
+	Thread klikacz;
 	JPanel panelGlowny;
-	ThreadGroup grupaWatkow = new ThreadGroup("Grupa wątków");
-	
+	ThreadGroup grupaWatkowSkanowania = new ThreadGroup("Watki skanowania");
+	ThreadGroup grupaWatkowKlikacza = new ThreadGroup("Watki klikacza");
 	
 	public Frame()
 	{
@@ -38,36 +43,62 @@ public class Frame
 	public void funkcja1()
 	{
 		ramka = new JFrame();
-		ramka.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
+		ramka.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		BorderLayout uklad = new BorderLayout();
 		
 		JPanel panelTla = new JPanel(uklad);
 		panelTla.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 		
+		
 		Box obszarPrzyciskow = new Box(BoxLayout.Y_AXIS);
 		
-		JButton przycisk = new JButton("Start");
+		JButton przycisk = new JButton("Start skanowania");
 		obszarPrzyciskow.add(przycisk);
 		przycisk.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				watek = new Thread(grupaWatkow, new PozycjaMyszy());
+				watek = new Thread(grupaWatkowSkanowania, new PozycjaMyszy());
 				watek.start();
 			}
 		});
 		
-		JButton przycisk2 = new JButton("Stop");
+		JButton przycisk2 = new JButton("Stop skanowania");
 		obszarPrzyciskow.add(przycisk2);
 		przycisk2.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				grupaWatkow.interrupt();
+				grupaWatkowSkanowania.interrupt();
 				tekst.append("\n"+"Zakończono skanowanie pozycji myszy");
 			}
+		});
+		
+		JButton przycisk3 = new JButton("Rozpocznij klikanie");
+		obszarPrzyciskow.add(przycisk3);
+		przycisk3.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				klikacz = new Thread(grupaWatkowKlikacza, new Klikacz());
+				klikacz.start();
+			}
+			
+		});
+		
+		JButton przycisk4 = new JButton("Zakończ klikanie");
+		obszarPrzyciskow.add(przycisk4);
+		przycisk4.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				grupaWatkowKlikacza.interrupt();
+				tekst.append("\n"+"Zakończono klikanie myszą");
+			}
+			
 		});
 		
 		tekst = new JTextArea(15,50);
@@ -115,6 +146,43 @@ public class Frame
 			System.out.println("Zakończono skanowanie pozycji myszy");
 		}
 		}
+	}
+	
+	public class Klikacz implements Runnable
+	{
+	
+	public int delay = 50;
+	public int rate = 1000;
+	public int rate2 = ((int) (Math.random() * delay));
+	public int randomWait = (50+ (int) (Math.random()*100));
+	
+		@Override
+		public void run() 
+		{
+			try 
+			{
+			    Robot robot = new Robot();
+			        while (!Thread.currentThread().isInterrupted()) 
+			        {
+			           try
+			           {
+			           Thread.sleep(rate);
+			           robot.mousePress(InputEvent.BUTTON1_MASK);
+			           Thread.sleep(randomWait);
+					   robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+			           }catch (Exception e) {}
+			           
+			        Thread.sleep(10);
+			        }
+				
+			}catch (AWTException  | InterruptedException e)
+			{
+				System.out.println("Zakończono klikanie myszką");
+			}
+
+		}
+		
 	}
 }
 
