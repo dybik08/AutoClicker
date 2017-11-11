@@ -10,6 +10,9 @@ import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class Frame
 	public Frame()
 	{
 		funkcja1();
+		
 	}
 	
 	public void funkcja1()
@@ -56,6 +60,7 @@ public class Frame
 		
 		JPanel panelTla = new JPanel(uklad);
 		panelTla.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		
 		
 		
 		Box obszarPrzyciskow = new Box(BoxLayout.Y_AXIS);
@@ -142,21 +147,97 @@ public class Frame
 		ramka.setBounds(50,50,300,300);
 		ramka.pack();
 		ramka.setVisible(true);
+		
+		ramka.setFocusable(true);
+		tekst.setFocusable(true);
+		pozycjaY.setFocusable(true);
+		pozycjaX.setFocusable(true);
+		panelGlowny.setFocusable(true);
+		panelTla.setFocusable(true);
+		obszarPrzyciskow.setFocusable(true);
+		ramka.requestFocusInWindow();
+		
+		ramka.addKeyListener(new KeyListener()
+		{
+
+			@Override
+			public void keyTyped(KeyEvent e) 
+			{
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) 
+			{
+				if((Integer.parseInt(pozycjaX.getText()) & Integer.parseInt(pozycjaY.getText())) != 0)
+				{
+					if(e.getKeyCode() == KeyEvent.VK_UP)
+					{
+						System.out.println("Klik");
+						klikacz = new Thread(grupaWatkowKlikacza, new Klikacz());
+						klikacz.start();
+					}
+				}
+					
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) 
+			{
+				// TODO Auto-generated method stub
+			}
+			
+		});
+		
+//		ramka.addKeyListener(new KeyAdapter()
+//		{
+//			public void keyPressed(KeyEvent e)
+//			{
+//				
+//				if(e.getKeyCode() == KeyEvent.VK_UP)
+//				{
+//					System.out.println("Klik");
+//					klikacz = new Thread(grupaWatkowKlikacza, new Klikacz());
+//					klikacz.start();
+//				}
+//			}
+//		});
+		
+		
 	}
 	
-//	public void setDelay(int opoznienie)
+//	public class Hotkey implements KeyListener
 //	{
 //		
-//    	delay = Integer.parseInt(pozycjaX.getText());
-//		delay = opoznienie;
-//	
-//	}
-//	
-//	public int getDelay()
-//	{
-//		return delay;
 //		
-//	}
+//
+//			@Override
+//			public void keyTyped(KeyEvent e) {
+//				// TODO Auto-generated method stub
+//				
+//					
+//			}
+//
+//			@Override
+//			public void keyPressed(KeyEvent e) 
+//			{
+//				if(e.getKeyCode() == KeyEvent.VK_UP)
+//				{
+//					klikacz = new Thread(grupaWatkowKlikacza, new Klikacz());
+//					klikacz.start();
+//				}
+//				
+//			}
+//
+//			@Override
+//			public void keyReleased(KeyEvent e) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//			
+//		
+//	};
 	
 	public class PozycjaMyszy implements Runnable
 	{
@@ -218,4 +299,13 @@ public class Frame
 		}
 		
 	}
+	
 }
+
+	
+	
+	// Dodać Hotkey i dać użytkownikowi możliwość ustawienia hotkey'a i odpalenia nim clickera
+	// 
+
+
+
